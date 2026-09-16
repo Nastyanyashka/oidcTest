@@ -36,7 +36,7 @@ jobs:
 
         echo ${{steps.tokenid.outputs.id_token}}
         
-        echo ${IAMTOKEN}
+        echo "${IAMTOKEN}"
         
         echo "IAMToken=${IAMTOKEN}" >> $GITHUB_OUTPUT
 
