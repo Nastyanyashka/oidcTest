@@ -29,6 +29,38 @@ jobs:
           let id_token = await core.getIDToken()
           core.setOutput('id_token', id_token)
     # Обменять токен задания рабочего процесса на IAM-токен сервисного аккаунта в Yandex Cloud
+    - name: Inspect OIDC token
+      env:
+        ID_TOKEN: ${{ steps.tokenid.outputs.id_token }}
+      run: |
+        python3 - <<'PY'
+        import os
+        import json
+        import base64
+
+        token = os.environ["ID_TOKEN"]
+
+        parts = token.split(".")
+
+        print("JWT parts:", len(parts))
+        print()
+
+        header = json.loads(
+            base64.urlsafe_b64decode(parts[0] + "=" * (-len(parts[0]) % 4))
+        )
+
+        payload = json.loads(
+            base64.urlsafe_b64decode(parts[1] + "=" * (-len(parts[1]) % 4))
+        )
+
+        print("HEADER:")
+        print(json.dumps(header, indent=2))
+
+        print()
+        print("PAYLOAD:")
+        print(json.dumps(payload, indent=2))
+        PY
+    
     - name: GetIAMToken
       run: |
         SA_ID="ajeb258a75dta6qfdd0p"
