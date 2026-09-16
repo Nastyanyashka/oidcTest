@@ -18,8 +18,6 @@ jobs:
   job:
     runs-on: ubuntu-latest
     steps:
-    - name: Install OIDC Client from Core Package
-      run: npm install @actions/core @actions/http-client
     # Получить токен задания рабочего процесса
     - name: Get Id Token
       uses: actions/github-script@v9
@@ -32,7 +30,7 @@ jobs:
     # Обменять токен задания рабочего процесса на IAM-токен сервисного аккаунта в Yandex Cloud
     - name: GetIAMToken
       run: |
-        SA_ID="<идентификатор_сервисного_аккаунта>"
+        SA_ID="ajeb258a75dta6qfdd0p"
         IAMTOKEN=$(curl -sH "Content-Type: application/x-www-form-urlencoded" -d "grant_type=urn:ietf:params:oauth:grant-type:token-exchange&requested_token_type=urn:ietf:params:oauth:token-type:access_token&audience=$SA_ID&subject_token=${{steps.tokenid.outputs.id_token}}&subject_token_type=urn:ietf:params:oauth:token-type:id_token" -X POST https://auth.yandex.cloud/oauth/token | jq -r '.access_token')
         
         echo IAMTOKEN
